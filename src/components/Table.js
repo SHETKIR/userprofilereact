@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Table = ({ columns, data }) => {
     const [sortedData, setSortedData] = useState(data);
     const [sortConfig, setSortConfig] = useState(null);
+    const [userPosts, setUserPosts] = useState([]);
+
+    useEffect(() => {
+        const fetchUserPosts = async () => {
+            try {
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+                const json = await response.json();
+                setUserPosts(json);
+            } catch (error) {
+                console.error('Error fetching user posts:', error);
+            }
+        };
+        fetchUserPosts();
+    }, []);
 
     const sortData = (column) => {
         let direction = 'asc';
@@ -22,7 +36,14 @@ const Table = ({ columns, data }) => {
         setSortConfig({ column, direction });
     };
 
+    const getUserPostById = (userId) => {
+        const post = userPosts.find((post) => post.userId === userId);
+        return post ? post.title : 'No post found';
+    };
+
+
     return (
+        <div>
         <table>
             <thead>
                 <tr>
@@ -40,14 +61,15 @@ const Table = ({ columns, data }) => {
             </thead>
             <tbody>
                 {sortedData.map((row) => (
-                    <tr key={row.id}>
+                    <tr key={row.id} onClick={() => getUserPostById(row.id)}>
                         {columns.map((column) => (
                             <td key={`${row.id}-${column}`}>{row[column]}</td>
                         ))}
                     </tr>
                 ))}
             </tbody>
-        </table>
+            </table>
+        </div>
     );
 };
 

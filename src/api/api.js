@@ -6,3 +6,7 @@ export const fetchUsers = async () => {
     const response = await axios.get(`${API_URL}/users`);
     return response.data;
 };
+
+export const fetchUsrData = async () => {
+    const response = await axios.get(`${API_URL}/users/`);
+}
