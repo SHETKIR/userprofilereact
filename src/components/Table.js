@@ -41,33 +41,45 @@ const Table = ({ columns, data }) => {
         return post ? post.title : 'No post found';
     };
 
+    const handleUserClick = (userId) => {
+        const userPostTitle = getUserPostById(userId);
+        alert(`User Post Title: ${userPostTitle}`);
+    };
 
     return (
         <div>
-        <table>
-            <thead>
-                <tr>
-                    {columns.map((column) => (
-                        <th key={column} onClick={() => sortData(column)}>
-                            {column}
-                            {sortConfig && sortConfig.column === column ? (
-                                <span>
-                                    {sortConfig.direction === 'asc' ? ' v' : ' ^'}
-                                </span>
-                            ) : null}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {sortedData.map((row) => (
-                    <tr key={row.id} onClick={() => getUserPostById(row.id)}>
+            <table>
+                <thead>
+                    <tr>
                         {columns.map((column) => (
-                            <td key={`${row.id}-${column}`}>{row[column]}</td>
+                            <th key={column} onClick={() => sortData(column)}>
+                                {column}
+                                {sortConfig && sortConfig.column === column ? (
+                                    <span>
+                                        {sortConfig.direction === 'asc' ? ' v' : ' ^'}
+                                    </span>
+                                ) : null}
+                            </th>
                         ))}
                     </tr>
-                ))}
-            </tbody>
+                </thead>
+                <tbody>
+                    {sortedData.map((row) => (
+                        <tr key={row.id}>
+                            {columns.map((column) => (
+                                <td key={`${row.id}-${column}`}>
+                                    {column === 'name' ? (
+                                        <button onClick={() => handleUserClick(row.id)}>
+                                            {row[column]}
+                                        </button>
+                                    ) : (
+                                        row[column]
+                                    )}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
             </table>
         </div>
     );
