@@ -4,6 +4,7 @@ const Table = ({ columns, data }) => {
     const [sortedData, setSortedData] = useState(data);
     const [sortConfig, setSortConfig] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
         const fetchUserPosts = async () => {
@@ -37,13 +38,12 @@ const Table = ({ columns, data }) => {
     };
 
     const getUserPostById = (userId) => {
-        const post = userPosts.find((post) => post.userId === userId);
-        return post ? post.title : 'No post found';
+        const posts = userPosts.filter((post) => post.userId === userId);
+        return posts.map((post) => post.title).join(', ') || 'No posts found';
     };
 
     const handleUserClick = (userId) => {
-        const userPostTitle = getUserPostById(userId);
-        alert(`User Post Title: ${userPostTitle}`);
+        setSelectedUserId(userId);
     };
 
     return (
@@ -81,6 +81,20 @@ const Table = ({ columns, data }) => {
                     ))}
                 </tbody>
             </table>
+            <div>
+                <h2>User Info</h2>
+                {selectedUserId && (
+                    <div>
+                        <strong>ID:</strong> {selectedUserId}
+                        <br />
+                        <strong>Name:</strong> {sortedData.find((row) => row.id === selectedUserId)?.name}
+                        <br />
+                        <strong>Email:</strong> {sortedData.find((row) => row.id === selectedUserId)?.email}
+                        <br />
+                        <strong>Posts:</strong> {getUserPostById(selectedUserId)}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
